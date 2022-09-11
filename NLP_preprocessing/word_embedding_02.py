@@ -1,0 +1,118 @@
+# -*- coding: cp949 -*-
+
+'''
+
+ Author / date : Jinwoo Lee / 2022-08-28
+
+
+< Word2Vec ÇÑ±Û Ver.  >
+
+ - ³×ÀÌ¹ö ¿µÈ­ ¸®ºä µ¥ÀÌÅÍ·Î ÇÑ±¹¾î Word2Vec ±¸ÃàÇÏ±â 
+
+
+
+<Step>
+
+1. Train data ±¸Ãà
+
+   1-1. µ¥ÀÌÅÍ ´Ù¿î·Îµå 
+
+   1-2. µ¥ÀÌÅÍ Á¤Á¦ ¹× ÅäÅ«È­
+
+      => °áÃøÄ¡(Null value) È®ÀÎ 
+
+         Á¤±Ô Ç¥Çö½ÄÀ» ÅëÇØ ÇÑ±Û ¿Ü ¹®ÀÚ Á¦°Å
+
+         ºÒ¿ë¾î Á¦°Å
+
+
+
+
+
+2. ¸ðµ¨ ±¸Ãà ¹× ÇÐ½À
+
+   2-1. ¸ðµ¨ ¼±¾ð 
+
+   2-2. ¿¹Á¦¸¦ ÅëÇÑ Word2Vec Check
+
+
+
+
+'''
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import urllib.request
+from gensim.models.word2vec import Word2Vec
+from konlpy.tag import Okt
+
+# ¿ÖÀÎÁö ¸ð¸£°ÚÀ¸³ª ¾Æ·¡¿Í °°Àº ÇüÅÂ·Î ÀÛ¼ºÇØ¾ß ÇÁ·Î±×·¡½º¹Ù ÁøÇà °¡´É
+from tqdm import tqdm
+
+
+# Step 1
+
+# 1-1 : µ¥ÀÌÅÍ ´Ù¿î·Îµå
+urllib.request.urlretrieve("https://raw.githubusercontent.com/e9t/nsmc/master/ratings.txt", filename="ratings.txt")
+
+train_data = pd.read_table('ratings.txt')
+
+# »óÀ§ 5°³ÀÇ ¸®ºä È®ÀÎ 
+print(train_data[:5])
+
+
+# 1-2 : µ¥ÀÌÅÍ Á¤Á¦ ¹× ÅäÅ«È­
+
+# °áÃøÄ¡ (Null) È®ÀÎ
+if train_data.isnull().values.any() : 
+
+    # Null °ªÀÌ Á¸ÀçÇÏ´Â row Á¦°Å 
+    train_data = train_data.dropna(how = 'any')
+
+# ÇÑ±Û ¿Ü ¹®ÀÚ Á¦°Å with Á¤±ÔÇ¥Çö½Ä
+train_data['document'] = train_data['document'].str.replace("[^¤¡-¤¾¤¿-¤Ó°¡-ÆR ]","")
+
+# ºÒ¿ë¾î Á¤ÀÇ
+not_using_words = ['ÀÇ','°¡','ÀÌ','Àº','µé','´Â','Á»','Àß','°Á','°ú','µµ','¸¦','À¸·Î','ÀÚ','¿¡','¿Í','ÇÑ','ÇÏ´Ù']
+
+# ÇüÅÂ¼Ò ºÐ¼®±â OKT¸¦ »ç¿ëÇÑ ÅäÅ«È­ ÀÛ¾÷ (´Ù¼Ò ½Ã°£ ¼Ò¿ä)
+okt = Okt()
+
+tokenized_data = []
+
+
+# tqdm : ÁøÇà·ü Progress bar 
+for sentence in tqdm(train_data['document']):
+    
+    # ÅäÅ«È­
+    tokenized_sentence = okt.morphs(sentence, stem=True) 
+
+    removed_sentence = [word for word in tokenized_sentence if not word in not_using_words]
+
+    tokenized_data.append(removed_sentence)
+
+# ¸®ºä ±æÀÌ ºÐÆ÷ È®ÀÎ
+print('¸®ºäÀÇ ÃÖ´ë ±æÀÌ :',max(len(review) for review in tokenized_data))
+print('¸®ºäÀÇ Æò±Õ ±æÀÌ :',sum(map(len, tokenized_data))/len(tokenized_data))
+plt.hist([len(review) for review in tokenized_data], bins=50)
+plt.xlabel('length of samples')
+plt.ylabel('number of samples')
+plt.show()
+
+# Step 2
+
+# 2-1 ¸ðµ¨ ±¸Ãà 
+
+from gensim.models import Word2Vec
+
+# model ¼±¾ð
+# size -> vector size·Î ÀÛ¼ºÇØ¾ß ¿À·ù¾È³² 
+model = Word2Vec(sentences = tokenized_data, vector_size = 100, window = 5, min_count = 5, workers = 4, sg = 0)
+
+# example 1
+print(model.wv.most_similar("ÃÖ¹Î½Ä"))
+
+print("===========")
+
+# example 2
+print(model.wv.most_similar("È÷¾î·Î"))
