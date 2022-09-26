@@ -5,55 +5,53 @@
  Author / date : Jinwoo Lee / 2022-08-28
 
 
-< Word RNN ( N:M RNN ±¸Á¶¸¦ ÀÌ¿ëÇÑ ) >
+< Word RNN ( N:M RNN êµ¬ì¡°ë¥¼ ì´ìš©í•œ ) >
 
- - pytorch ÀÇ embedding layer¸¦ »ç¿ëÇÏ¿© ´Ü¾î ´ÜÀ§ÀÇ Text Generation ±¸¼ºÇØº¸±â
+ - pytorch ì˜ embedding layerë¥¼ ì‚¬ìš©í•˜ì—¬ ë‹¨ì–´ ë‹¨ìœ„ì˜ Text Generation êµ¬ì„±í•´ë³´ê¸°
 
 
 <Step>
 
 1. Text Preprocessing
 
-   1-1. ¹®ÀåÀ» ´Ü¾î·Î tokenization
+   1-1. ë¬¸ì¥ì„ ë‹¨ì–´ë¡œ tokenization
 
-   1-2. ´Ü¾î¿¡ ´ëÇÑ Á¤¼ö ÀÓº£µù ¹× ´Ü¾îÁıÇÕ Çü¼º 
+   1-2. ë‹¨ì–´ì— ëŒ€í•œ ì •ìˆ˜ ì„ë² ë”© ë° ë‹¨ì–´ì§‘í•© í˜•ì„± 
 
-   1-3. sentence =>  word embedding vector·Î º¯È¯ ¹×
+   1-3. sentence =>  word embedding vectorë¡œ ë³€í™˜ ë°
 
-        ÀÔ·Â & Á¤´ä µ¥ÀÌÅÍ »ı¼º 
+        ì…ë ¥ & ì •ë‹µ ë°ì´í„° ìƒì„± 
 
-        ÀÔ·Â µ¥ÀÌÅÍ : sentence[:-1] , Á¤´ä µ¥ÀÌÅÍ : sentence[1:]
+        ì…ë ¥ ë°ì´í„° : sentence[:-1] , ì •ë‹µ ë°ì´í„° : sentence[1:]
 
 
 
 
 2. Construct Model
 
-   2-1. embedding layer°¡ Ãß°¡ µÈ RNN ½Å°æ¸Á ±¸¼º 
+   2-1. embedding layerê°€ ì¶”ê°€ ëœ RNN ì‹ ê²½ë§ êµ¬ì„± 
 
         raw_data -> embedding layer -> RNN_input -> hidden layer -> output layer
 
 
-        * dataÀÇ Â÷¿ø º¯È­ 
+        * dataì˜ ì°¨ì› ë³€í™” 
 
          if data.shape = [1,6] ( batch, time_step ) , after embedding layer then data.shape = [1,6,5] 
        
         why ? 
         
-         =? 0, ... 5 ¿¡ ÇØ´çÇÏ´Â °¢ time step t¿¡ ´ëÇÏ¿©  t = [ 1,2, 3.3 , 4.2 ...] ¿Í °°ÀÌ Å©±â 5(»ç¿ëÀÚ Á¤ÀÇ) ¸¸Å­ÀÇ embedding vector·Î º¯È¯ ÇÏ±â ¶§¹® 
+         =? 0, ... 5 ì— í•´ë‹¹í•˜ëŠ” ê° time step tì— ëŒ€í•˜ì—¬  t = [ 1,2, 3.3 , 4.2 ...] ì™€ ê°™ì´ í¬ê¸° 5(ì‚¬ìš©ì ì •ì˜) ë§Œí¼ì˜ embedding vectorë¡œ ë³€í™˜ í•˜ê¸° ë•Œë¬¸ 
 
 
-        * RNNÀÇ ÀÔ·Â 
+        * RNNì˜ ì…ë ¥ 
         
-           x, _status= self.rnn(x) ÀÇ ÇüÅÂ¸¦ º¸¸é h_t¸¦ »ç¿ëÇÏÁö ¾Ê´Â´Ù
+           x, _status= self.rnn(x) ì˜ í˜•íƒœë¥¼ ë³´ë©´ h_të¥¼ ì‚¬ìš©í•˜ì§€ ì•ŠëŠ”ë‹¤
 
-           => ÀÌ·ĞÀûÀ¸·Î´Â »ç¿ëÇØ¾ß ÇÏÁö¸¸, default °ªÀ¸·Î ¼ÂÆÃ µÇÀÖÀ½
+           => ì´ë¡ ì ìœ¼ë¡œëŠ” ì‚¬ìš©í•´ì•¼ í•˜ì§€ë§Œ, default ê°’ìœ¼ë¡œ ì…‹íŒ… ë˜ìˆìŒ
 
-              ±â°è¹ø¿ª task ÄÚµù¿¡¼­´Â ¸í½ÃÀûÀ¸·Î h_t¸¦ »ç¿ëÇÏ´Âµ¥, text »ı¼º, ºĞ·ù ÆÄÆ®¿¡¼­´Â ±×·¸°Ô ÇÏÁö ¾Ê´Â ÀÌÀ¯´Â 
+              ê¸°ê³„ë²ˆì—­ task ì½”ë”©ì—ì„œëŠ” ëª…ì‹œì ìœ¼ë¡œ h_të¥¼ ì‚¬ìš©í•˜ëŠ”ë°, text ìƒì„±, ë¶„ë¥˜ íŒŒíŠ¸ì—ì„œëŠ” ê·¸ë ‡ê²Œ í•˜ì§€ ì•ŠëŠ” ì´ìœ ëŠ” 
 
-              ->  
-
-              ->
+              ->  ì…ë ¥ë°ì´í„°ì˜ í˜•íƒœë¥¼ ë³´ë©´, input_seq_len ë§Œí¼ì˜ ë°ì´í„°ë¥¼ í•œë²ˆì— ì²˜ë¦¬í•˜ê¸° ë•Œë¬¸ì— ì—†ëŠ”ê²ƒì²˜ëŸ¼ ë³´ì´ëŠ” ê²ƒ 
 
    2-2. construct model and set loss, optimizer
 
@@ -76,16 +74,16 @@ sentence = "Repeat is the best medicine for memory"
 # 1-1 : word tokenization
 words = list(set(sentence.split()))
 
-# 1-2 : Á¤¼ö ÀÓº£µù ¹× ´Ü¾î ÁıÇÕ Çü¼º
+# 1-2 : ì •ìˆ˜ ì„ë² ë”© ë° ë‹¨ì–´ ì§‘í•© í˜•ì„±
 vocab = { word : idx+1 for idx, word in enumerate(words) }
 num2word = {idx+1 : word for idx, word in enumerate(words) }
 
-# unknown token ¿¡ ´ëÇÑ º¸Á¤
+# unknown token ì— ëŒ€í•œ ë³´ì •
 vocab['<unk>'] = 0
 num2word[0] = '<unk>'
 
 
-# 1-3 : sentence¸¦ word embedding vector·Î º¯È¯ ( word ·Î tokenization ÇÏ°í, ÇØ´ç ±âÁØÀ¸·Î ¹®ÀåÀ» Á¤¼ö ÀÓº£µù È­) ¹× ÀÔ·Â, Á¤´ä µ¥ÀÌÅÍ Çü¼º
+# 1-3 : sentenceë¥¼ word embedding vectorë¡œ ë³€í™˜ ( word ë¡œ tokenization í•˜ê³ , í•´ë‹¹ ê¸°ì¤€ìœ¼ë¡œ ë¬¸ì¥ì„ ì •ìˆ˜ ì„ë² ë”© í™”) ë° ì…ë ¥, ì •ë‹µ ë°ì´í„° í˜•ì„±
 
 def make_data(sentence, vocab):
 
@@ -94,8 +92,8 @@ def make_data(sentence, vocab):
     _input, _label = sen_encoded[:-1] , sen_encoded[1:]
 
     # boath x_train.shape and label = [1,6] 
-    # batch size°¡ ¾øÀ½À¸·Î °¡Àå ¹Ù±ù Â÷¿ø¿¡ 1Â÷¿ø Ãß°¡
-    # NNÀÇ inputÀº batch_size¸¦ °í·ÁÇÑ 3D tensor¸¦ È°¿ë
+    # batch sizeê°€ ì—†ìŒìœ¼ë¡œ ê°€ì¥ ë°”ê¹¥ ì°¨ì›ì— 1ì°¨ì› ì¶”ê°€
+    # NNì˜ inputì€ batch_sizeë¥¼ ê³ ë ¤í•œ 3D tensorë¥¼ í™œìš©
     x_train = torch.LongTensor(_input).unsqueeze(0)
     label = torch.LongTensor(_label).unsqueeze(0)
     
@@ -110,13 +108,13 @@ train_data, label_data = make_data(sentence, vocab)
 # model hyperparams
 init_dim, output_dim = len(vocab), len(vocab)
 
-# RNNÀÇ input dimÀº embedding vectorÀÇ Å©±â¿¡ µû¶ó °áÁ¤ µÊ 
+# RNNì˜ input dimì€ embedding vectorì˜ í¬ê¸°ì— ë”°ë¼ ê²°ì • ë¨ 
 rnn_input_dim, hidden_dim = 5, 15
 
 learning_rate = 0.1
 
 
-# 2-1 : embedding layer°¡ Æ÷ÇÔµÈ RNN ±¸Çö
+# 2-1 : embedding layerê°€ í¬í•¨ëœ RNN êµ¬í˜„
 
 class JW_RNN(nn.Module):
 
@@ -124,7 +122,7 @@ class JW_RNN(nn.Module):
 
         super(JW_RNN, self).__init__()
 
-        # raw data°¡ embedding layer¸¦ Åë°úÇÏ¸é, »çÀü¿¡ Á¤ÇØÁø Â÷¿ø (rnn_input_dim) embedding vector·Î º¯È¯
+        # raw dataê°€ embedding layerë¥¼ í†µê³¼í•˜ë©´, ì‚¬ì „ì— ì •í•´ì§„ ì°¨ì› (rnn_input_dim) embedding vectorë¡œ ë³€í™˜
         self.embedding_layer = nn.Embedding(num_embeddings = init_dim, embedding_dim = rnn_input_dim)
 
         self.rnn = nn.RNN(rnn_input_dim, hidden_dim, batch_first = True )
@@ -143,8 +141,8 @@ class JW_RNN(nn.Module):
         # [1,6,15] -> [1,6,8]
         x  = self.linear(x)
         
-        # 8°³ÀÇ ´ÙÀ½ ´Ü¾î ÈÄº¸µé°ú ºñ±³ÇØ¾ß ÇÔÀ¸·Î 
-        # ºñ±³ÇØ¾ß ÇÏ´Â ÈÄº¸ Â÷¿øÀ» Á¦¿ÜÇÑ ³ª¸ÓÁö´Â concatenate ÇÏ±â À§ÇÑ -1 
+        # 8ê°œì˜ ë‹¤ìŒ ë‹¨ì–´ í›„ë³´ë“¤ê³¼ ë¹„êµí•´ì•¼ í•¨ìœ¼ë¡œ 
+        # ë¹„êµí•´ì•¼ í•˜ëŠ” í›„ë³´ ì°¨ì›ì„ ì œì™¸í•œ ë‚˜ë¨¸ì§€ëŠ” concatenate í•˜ê¸° ìœ„í•œ -1 
         x = x.view(-1, len(vocab))
 
         return x 
