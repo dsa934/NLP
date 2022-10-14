@@ -4,15 +4,10 @@ Code interpretation and paper restoration for various NLP(Natural Language Proce
 
 ## Purpose
 
-이 저장소는 [나동빈님 유튜브](https://www.youtube.com/c/dongbinna), [딥 러닝을 이용한 자연어 처리 입문 유원준님/안상준님](https://wikidocs.net/book/2155)의 자료를 참조하여, 
-
-자연어 처리(NLP) 지식 습득 및  State-of-the-art NLP Paper 복원 과정을 진행하며, 아래의 2가지 사항에 대해 중점적으로 다룹니다.
-
-* 시스템적 관점으로, NLP 모델에 대한 데이터의 입,출력의 차원 변화를 파악하여 모델의 작동 원리 파악 
-
-* 다양한 domain에 NLP Model을 적용함으로써 활용되는 domain 별 preprcessing 기법 파악
+Machine Translation 분야의 State-of-the-art Paper 복원 및 자연어처리(NLP) 관련 Task를 직접 구현해 봄으로써 
 
 
+Sequential data를 다루는 DL에 대한 지식 습득을 목적으로 제작하였습니다.
 
 ## Contents
 
@@ -25,12 +20,16 @@ Code interpretation and paper restoration for various NLP(Natural Language Proce
   * one to many
   * many to many
 
-* NLP Paper Restoration
+* Machine Translation ( Paper Restoration )
   * Seq2Seq
   * Attention Mechanism
   * Transformer
   * GPT
   * BERT
   
+  
+## References
+  * [나동빈님 유튜브](https://www.youtube.com/c/dongbinna)
+  * [딥 러닝을 이용한 자연어 처리 입문 유원준님/안상준님](https://wikidocs.net/book/2155)
 
 
