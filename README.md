@@ -24,8 +24,7 @@ Sequential data를 다루는 DL에 대한 지식 습득을 목적으로 제작�
   * Seq2Seq
   * Attention Mechanism
   * Transformer
-  * GPT
-  * BERT
+ 
   
   
 ## References
